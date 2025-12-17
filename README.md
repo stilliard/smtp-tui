@@ -23,3 +23,8 @@ The Makefile includes commands to build and run the tui:
 - `make run`: Quick run via bun
 - `make build`: Build the executables for each platform
 - `make update-deps`: Update dependencies interactively with bun
+
+## Usage as an SMTP Server
+
+Set the SMTP server to `localhost` on port `2525` in your email client or application to send emails to this TUI.
+(Any username/password is currently accepted as this is intended for local testing only.)
