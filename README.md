@@ -8,6 +8,10 @@ An email SMTP sandbox with a terminal interface to receive and view emails in re
 - Simple terminal-based UI for viewing incoming emails
 - Supports basic SMTP commands
 - Real-time email display
+- Email preview with headers and body in plain text via terminal
+- Ability to view raw email headers
+- Keyboard shortcut to open full HTML email in your browser
+- Cross-platform builds for Windows, macOS, and Linux
 
 ## Development
 
