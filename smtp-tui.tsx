@@ -9,17 +9,38 @@ interface Email {
   subject: string;
   body: string;
   time: string;
+  html?: string;
+  headers?: string;
 }
 
 function App() {
   const [emails, setEmails] = useState<Email[]>([]);
   const [selected, setSelected] = useState(0);
+  const [viewMode, setViewMode] = useState<'normal' | 'headers'>('normal');
   const { exit } = useApp();
 
   useInput((input, key) => {
     if (input === 'q') exit();
     if (key.downArrow || input === 'j') setSelected(s => Math.min(s + 1, emails.length - 1));
     if (key.upArrow || input === 'k') setSelected(s => Math.max(s - 1, 0));
+
+    // Delete email
+    if (input === 'd' && emails.length > 0) {
+      setEmails(prev => prev.filter((_, i) => i !== selected));
+      setSelected(s => Math.max(0, Math.min(s, emails.length - 2)));
+    }
+
+    // Open HTML in browser
+    if (input === 'o' && emails[selected]?.html) {
+      const tmpFile = `/tmp/email-${Date.now()}.html`;
+      Bun.write(tmpFile, emails[selected].html!);
+      Bun.spawn(['xdg-open', tmpFile], { stdout: 'ignore', stderr: 'ignore' });
+    }
+
+    // Toggle raw headers view
+    if (input === 'r') {
+      setViewMode(v => v === 'normal' ? 'headers' : 'normal');
+    }
   });
 
   useEffect(() => {
@@ -36,12 +57,24 @@ function App() {
             const content = raw.split('\r\n.\r\n')[0];
             try {
               const parsed = await simpleParser(content);
+              const headersMap = parsed.headers as any;
+              const headerLines: string[] = [];
+              if (headersMap) {
+                for (const [key, value] of headersMap) {
+                  const valueStr = typeof value === 'object' && value !== null
+                    ? (value.text || value.value || JSON.stringify(value))
+                    : String(value);
+                  headerLines.push(`${key}: ${valueStr}`);
+                }
+              }
               setEmails(prev => [{
                 from: parsed.from?.text || from,
                 to: parsed.to?.text || recipients.join(', '),
                 subject: parsed.subject || '(no subject)',
                 body: parsed.text || parsed.html?.replace(/<[^>]*>/g, '') || '',
                 time: new Date().toLocaleTimeString(),
+                html: parsed.html || undefined,
+                headers: headerLines.join('\n'),
               }, ...prev]);
             } catch {}
             conn.write('250 OK\r\n');
@@ -85,18 +118,29 @@ function App() {
 
       {/* Preview */}
       <Box flexDirection="column" width="60%" borderStyle="round" borderColor="cyan" padding={1}>
-        <Text bold color="cyan">Preview</Text>
+        <Text bold color="cyan">Preview {viewMode === 'headers' && '(Raw Headers)'}</Text>
         {current ? (
           <Box flexDirection="column">
-            <Text><Text bold>From:</Text> {current.from}</Text>
-            <Text><Text bold>To:</Text> {current.to}</Text>
-            <Text><Text bold>Subject:</Text> {current.subject}</Text>
-            <Text dimColor>{'─'.repeat(40)}</Text>
-            <Text>{current.body.slice(0, 500)}</Text>
+            {viewMode === 'normal' ? (
+              <>
+                <Text><Text bold>From:</Text> {current.from}</Text>
+                <Text><Text bold>To:</Text> {current.to}</Text>
+                <Text><Text bold>Subject:</Text> {current.subject}</Text>
+                <Text dimColor>{'─'.repeat(40)}</Text>
+                <Text>{current.body.slice(0, 500)}</Text>
+              </>
+            ) : (
+              <Text>{current.headers || 'No headers available'}</Text>
+            )}
           </Box>
         ) : (
           <Text dimColor>Select an email</Text>
         )}
+        <Box marginTop={1}>
+          <Text dimColor>
+            j/k: navigate • d: delete • o: open HTML • r: toggle headers • q: quit
+          </Text>
+        </Box>
       </Box>
     </Box>
   );
