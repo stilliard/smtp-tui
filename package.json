@@ -1,0 +1,14 @@
+{
+  "name": "smtp-tui",
+  "version": "0.1.0",
+  "license": "MIT",
+  "dependencies": {
+    "ink": "^6.5.1",
+    "react": "^19.2.3",
+    "mailparser": "^3.9.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.7",
+    "react-devtools-core": "^7.0.1"
+  }
+}
