@@ -1,5 +1,5 @@
 
-# SMTP Terminal UI
+# SMTP email sandbox with terminal UI
 
 An email SMTP sandbox with a terminal interface to receive and view emails in real-time.
 
