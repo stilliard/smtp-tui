@@ -7,7 +7,7 @@ An email SMTP sandbox with a terminal interface to receive and view emails in re
 
 Check out the [Releases](https://github.com/stilliard/smtp-tui/releases) page for pre-built binaries for Windows, macOS, and Linux.
 
-For Linux, download the `smtp-tui-linux` binary from the releases page, make it executable with `chmod +x smtp-tui-linux`, and run it using `./smtp-tui-linux`.
+For Linux, download the `smtp-tui-linux` binary from the releases page, make it executable with `chmod +x smtp-tui-linux`, and run it using `./smtp-tui-linux`. Then make it globally available with `sudo mv smtp-tui-linux /usr/local/bin/smtp-tui` and you can now call `smtp-tui` anytime.
 
 ## Features
 
