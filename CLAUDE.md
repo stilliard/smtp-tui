@@ -9,3 +9,6 @@ smtp-tui is a local SMTP sandbox — a single-file TUI app that receives emails 
 - **Source:** single file — `smtp-tui.tsx`
 - **Run:** `make run` (or `bun run smtp-tui.tsx`)
 - **Build:** `make build` — cross-compiles to linux, macOS (arm64/x64), windows
+
+## Feature Specs
+This project uses KISS Specs. Feature specifications live in `.specs/`. Each markdown file describes a feature: what it does, why, how it's built, and how to validate it. Read the relevant spec before working on a feature. Use keywords in frontmatter to find related features. Template: `.specs/_template.md`.
